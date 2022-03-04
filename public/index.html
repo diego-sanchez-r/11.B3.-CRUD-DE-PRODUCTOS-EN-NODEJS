@@ -1,215 +1,57 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    </head>
-    <body>
-    <center>
-        <h2>Todos los Equipos de Futbol</h2>
-        <button id="btnEquipos">Cargar Equipos</button>
-        <button id="btnEquipo" style="display: none ">Carga Equipo</button>
-
-        
-        <button id="btnBorraEquipo" style="display: none ">Borra Producto</button>
-        <button type="button" class="btn btn-primary" id="abreParaInsertar">
-            Nuevo Equipo
-        </button>
-        <input type="number" style="display: none " id="idEquipo" value="1">
-        <div id="formulario">
-
-            
-        </div>
-        <table id="tablaEquipos" class="table">
-            
-        </table>
-        <div id="divEquipos" style="display: none "></div>
-        
-        <!---*************** VENTANA MODAL ***************-->
-        <!-- The Modal -->
-<div class="modal" id="myModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Modal Heading</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-            <p>ID:<input type="text" name="id" id="id"></p>
-            <p>Nombre:<input type="text" name="nombre" id="nombre"></p>
-            <p>Ciudad:<input type="text" name="ciudad" id="ciudad"></p>
-            <p>Goles<input type="text" name="goles" id="goles"></p> 
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button id="btnInsertaEquipo">Inserta Equipo</button>
-        <button id="btnActualizaEquipo" class="btn btn-primary" data-dismiss="modal">Actualiza Equipo</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-        <!--- *************** FIN DE VENTANA MODAL **************-->
-      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> 
-        
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <h1>Login con Google</h1>
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <div
+          id="g_id_onload"
+          data-client_id="786295692445-gsfaaml4gfvcbfm0o4bpm15lr7n9ne19.apps.googleusercontent.com"
+          data-auto_prompt="false"
+          data-callback="handleCredentialResponse"
+        ></div>
+        <div
+          class="g_id_signin"
+          data-type="standard"
+          data-size="large"
+          data-theme="outline"
+          data-text="sign_in_with"
+          data-shape="rectangular"
+          data-logo_alignment="left"
+        ></div>
+    
+        <button id="deslogearse-google">Deslogearse de Google</button>
         <script>
-            document.getElementById("btnEquipos").addEventListener('click',cargaEquipos);
-            document.getElementById("btnEquipo").addEventListener('click',cargaEquipo);
-            document.getElementById("btnActualizaEquipo").addEventListener('click',actualizaEquipo);
-            document.getElementById("btnInsertaEquipo").addEventListener('click',insertaEquipo);
-            document.getElementById("btnBorraEquipo").addEventListener('click',borrarEquipo);
-            document.getElementById("abreParaInsertar").addEventListener('click',abreParaInsertar);
-
-           let btnInsertaProducto=document.getElementById("btnInsertaEquipo");
-           let btnActualizaProducto=document.getElementById("btnActualizaEquipo");
-
-           function getAbsolutePath() {
-                var loc = window.location;
-                var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
-                return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
-            }
-           
-           function cargaEquipos(){
-              let tabla = document.getElementById("tablaEquipos");
-              fetch(getAbsolutePath()+`/webresources/generic/equipos`)
-                .then(response => response.json())
-                .then(json => {console.log(json);
-                //bucle para eliminar todas las filas de la tabla
-                while( tabla.firstChild){
-                    tabla.removeChild(tabla.firstChild);
-                }
-                //recorre todos los equipos del array de equipos
-                for ( i=0;i<=json.length;i++){
-                     document.getElementById("divEquipos").innerHTML+=json[i].nombre;
-                     let fila=document.createElement("tr");
-                     let celdaId=document.createElement("td");
-                     celdaId.textContent=json[i].id;
-                     let celdaNombre=document.createElement("td");
-                     celdaNombre.textContent=json[i].nombre;
-                     let celdaCiudad=document.createElement("td");
-                     celdaCiudad.textContent=json[i].ciudad;
-                     let celdaGoles=document.createElement("td");
-                     celdaGoles.textContent=json[i].goles;
-                     /*** CELDA BORRAR ****/
-                     let celdaBorrar=document.createElement("td");
-                     
-                     let btnBorrar=document.createElement("button");
-                     btnBorrar.setAttribute("onclick","borraEquipoPorId("
-                             +json[i].id+")");
-                     btnBorrar.textContent="Borrar";
-                     celdaBorrar.appendChild(btnBorrar);
-                    /*** CELDA ACTUALIZAR ****/
-                     let celdaActualizar=document.createElement("td");
-                     let btnActualizar=document.createElement("button");
-                     btnActualizar.setAttribute("onclick","cargaEquipoPorId("
-                             +json[i].id+")");
-                     btnActualizar.textContent="Actualizar";
-                     celdaActualizar.appendChild(btnActualizar);
-                    
-                     fila.appendChild(celdaId);
-                     fila.appendChild(celdaNombre);
-                     fila.appendChild(celdaCiudad);
-                     fila.appendChild(celdaGoles);
-                     fila.appendChild(celdaBorrar);
-                     fila.appendChild(celdaActualizar);
-                     
-                     
-                     tabla.appendChild(fila);
-                     
-                 }//fin de for
-                 
-              })
-         } 
-
-         function cargaEquipo() {
-             let idEquipo=document.getElementById("idEquipo").value;
-             cargaEquipoPorId(idEquipo);              
-         }
-         function cargaEquipoPorId(idEquipo){
-             $('#myModal').modal('show');
-
-             btnInsertaEquipo.style.display="none";
-             btnActualizaEquipo.style.display="inline";
-             fetch(getAbsolutePath()+'/webresources/generic/equipo/'+idEquipo )
-                .then(response => response.json())
-                .then(json => {
-                    console.log(json);
-                    document.getElementById("formulario").style.display="block";
-                    document.getElementById("id").value=json.id;
-                    document.getElementById("nombre").value=json.nombre;
-                    document.getElementById("ciudad").value=json.ciudad;
-                    document.getElementById("goles").value=json.goles;
-                });
-         }
-         
-         function abreParaInsertar(){
-             $('#myModal').modal('show');
-
-             btnInsertaEquipo.style.display="inline";
-             btnActualizaEquipo.style.display="none";
-         }
-         function actualizaEquipo(){
-              fetch(getAbsolutePath()+'/webresources/generic/equipo/', {
-             method: 'PUT',
-             body: JSON.stringify({
-               id: document.getElementById("id").value,
-               nombre: document.getElementById("nombre").value,
-               ciudad: document.getElementById("ciudad").value,
-               goles: document.getElementById("goles").value
-             }),
-             headers: {
-               'Content-type': 'application/json; charset=UTF-8',
-             },
-           })
-             .then((response) => response.json())
-             .then((json) => console.log(json));
-
-         }
-         
-         function insertaEquipo(){
-              fetch(getAbsolutePath()+'/webresources/generic/equipo/', {
-             method: 'POST',
-             body: JSON.stringify({
-               nombre: document.getElementById("nombre").value,
-               ciudad: document.getElementById("ciudad").value,
-               goles: document.getElementById("goles").value
-             }),
-             headers: {
-               'Content-type': 'application/json; charset=UTF-8',
-             },
-           })
-             .then((response) => response.json())
-             .then((json) => console.log(json));
-
-         }
-         
-         function borrarEquipo() {
-             let idEquipo=document.getElementById("idEquipo").value;
-             borraEquipoPorId(idEquipo);
-             cargaEquipos();
-         }
-         function borraEquipoPorId(idEquipo){
-             fetch(getAbsolutePath()+'/webresources/generic/equipo/'+idEquipo, {
-                method: 'DELETE',
+          const boton = document.getElementById('deslogearse-google');
+          boton.onclick = () =>{
+            google.accounts.id.disableAutoSelect();
+            google.accounts.id.revoke( localStorage.getItem('email'));
+            localStorage.clear();
+            location.reload();
+          }
+          function handleCredentialResponse(response) {
+            // decodeJwtResponse() is a custom function defined by you
+            // to decode the credential response.
+            //const responsePayload = decodeJwtResponse(response.credential);
+            console.log(response.credential);
+            const body = {'id_token':response.credential }
+            fetch("http://localhost:3000/google", {
+              method: "POST",
+              body: JSON.stringify(body),
+              headers: {
+                "Content-type": "application/json; charset=UTF-8",
+              },
+            })
+              .then((response) => response.json())
+              .then((json) =>{ console.log(json);
+                localStorage.setItem("email",json.miusuario.correo);
               });
-              cargaEquipos();
-         }
+          }
         </script>
-        </center>
-    </body>
+</body>
 </html>
