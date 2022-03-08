@@ -11,7 +11,7 @@
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <div
           id="g_id_onload"
-          data-client_id="786295692445-gsfaaml4gfvcbfm0o4bpm15lr7n9ne19.apps.googleusercontent.com"
+          data-client_id="351491771173-eajri48jfm1dpvmpogoivt21ar2abvh5.apps.googleusercontent.com"
           data-auto_prompt="false"
           data-callback="handleCredentialResponse"
         ></div>
@@ -48,7 +48,7 @@
               },
             })
               .then((response) => response.json())
-              .then((json) =>{ console.log(json);
+              .then((json) =>{ console.log(json);window.location = "index2.html";
                 localStorage.setItem("email",json.miusuario.correo);
               });
           }

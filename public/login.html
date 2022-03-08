@@ -30,7 +30,8 @@
                 },
                 })
                 .then((response) => response.json())
-                .then((json) => alert(json.msg + "Token: " + json.token))
+                
+                .then((json) => {alert(json.msg + "Token: " + json.token); window.location = "index2.html";})
                         }
 
            function getAbsolutePath() {

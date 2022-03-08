@@ -33,49 +33,57 @@ class Server {
     }
     rutas(){
          /**** RUTA SUBIR ARCHIVOS ****/
-    this.app.post(
-        "/subir",
-        
-        async function (req, res) {
-          if(!req.files){
-            res.status(400).json({
-              msg:'No se han mandado archivos',
-            });
-          }
-  
-          /* Esperamos un archivo con el nombre de un archivo */
-          if(!req.files.archivo){
-            res.status(400).json({
-              msg:'No se han mandado archivos',
-            });
-          }else{
-            const archivo = req.files.archivo;
-            const nombreCortado = archivo.name.split(".");
-            const extension = nombreCortado[nombreCortado.length -1];
-            //Validar la extension
-            const extensionesValidar = ['jpg','png','jpeg','gif'];
-            if(!extensionesValidar.includes( extension )){
-              return res.status(400).json({
-                msg: `La extension ${extension} no está permitida, ${extensionesValidar}`,
-              });
-            }
-            //Cambia el nombre 
-            const nombreTemp = uuidv4() + "." + extension;
-            const path = require('path');
-            const uploadPath = path.join(__dirname,'../archivos/',nombreTemp);
-            archivo.mv(uploadPath,function(err){
-              if(err){
-                return res.status(500).json(err);
-              }
-              res.status(200).json({
-                msg:'Archivo subido con exito',
-                uploadPath,
-                extension,
-                archivo
-              });
-            });
-          }
-        });
+         this.app.post("/subir",
+         async function(req, res) {
+             // Si no hay ficheros
+             if (!req.files) {
+                 res.status(400).json({
+                     msg: "No se han mandado la imagen"
+                 });
+             }
+
+             // Esperamos un archivo con el nombre de "imagen"
+             if (!req.files.imagen) {
+                 res.status(400).json({
+                     msg: "No se ha mandado 'imagen'"
+                 });
+             } else {
+                 // Si se ha subido el fichero
+                 const { imagen } = req.files;
+                 const nombreCortado = imagen.name.split(".");
+                 const extension = nombreCortado[nombreCortado.length - 1];
+
+                 // Validar la extensión
+                 const extensionesValidas = ["jpg", "jpeg", "png", "gif"];
+
+                 if (!extensionesValidas.includes(extension)) {
+                     return res.status(400).json({
+                         msg: `La extensión ${extension} no está permitida`
+                     });
+                 }
+
+                 const nombreTemporal = uuidv4() + "." + extension;
+
+                 const path = require("path");
+                 let uploadPath = path.join(__dirname, "../public/imagenes", nombreTemporal);
+
+                 imagen.mv(uploadPath, function(err) {
+                     if (err) {
+                         return res.status(500).json({ err });
+                     }
+
+                     /*res.status(200).json({
+                         msg: "Se ha enviado 'imagen'",
+                         nombreTemporal,
+                     });*/
+                 });
+
+                 res.status(200).json({
+                     msg: "Se ha enviado 'imagen' correctamente",
+                     nombreTemporal
+                 });
+             }
+         });
         /******* RUTAS DE google *****/
         this.app.post(
             "/google",

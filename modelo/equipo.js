@@ -10,7 +10,7 @@ const EquiposSchema = mongoose.Schema(
         required: [true,'La ciudad es obligatoria']
     },
     goles: {
-        type:Number,
+        type:String,
         required: [true,'Los goles son obligatorios']
     },
     imagen: {

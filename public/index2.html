@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
 <html>
     <head>
         <title>TODO supply a title</title>
@@ -46,10 +42,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 
       <!-- Modal body -->
       <div class="modal-body">
+          <form>
             <p>ID:<input type="text" name="id" id="id"></p>
             <p>Nombre:<input type="text" name="nombre" id="nombre"></p>
             <p>Ciudad:<input type="text" name="ciudad" id="ciudad"></p>
             <p>Goles<input type="text" name="goles" id="goles"></p> 
+            <p>Imagen Escudo<input type="file" name="imagen" id="imagen-file"></p> 
+            <input type="reset" name="resetear">
+          </form>
       </div>
 
       <!-- Modal footer -->
@@ -84,9 +84,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
             }
            
+            console.log("Token Inicio: " + json.token);
+            localStorage.setItem("token", json.token);
+
+            console.log(getAbsolutePath());
            function cargaEquipos(){
               let tabla = document.getElementById("tablaEquipos");
-              fetch(getAbsolutePath()+`/webresources/generic/equipos`)
+              fetch(`http://localhost:3000/webresources/generic/equipos`)
                 .then(response => response.json())
                 .then(json => {console.log(json);
                 //bucle para eliminar todas las filas de la tabla
@@ -95,7 +99,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 }
                 //recorre todos los equipos del array de equipos
                 for ( i=0;i<=json.length;i++){
-                     document.getElementById("divEquipos").innerHTML+=json[i].nombre;
+                     //document.getElementById("divEquipos").innerHTML+=json[i].nombre;
                      let fila=document.createElement("tr");
                      let celdaId=document.createElement("td");
                      celdaId.textContent=json[i].id;
@@ -105,19 +109,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                      celdaCiudad.textContent=json[i].ciudad;
                      let celdaGoles=document.createElement("td");
                      celdaGoles.textContent=json[i].goles;
+                     let celdaImagen=document.createElement("td");
+                     celdaImagen.innerHTML = "<img src='imagenes/" + json[i].imagen + "' height='100' width='100'>";
                      /*** CELDA BORRAR ****/
                      let celdaBorrar=document.createElement("td");
-                     
                      let btnBorrar=document.createElement("button");
-                     btnBorrar.setAttribute("onclick","borraEquipoPorId("
-                             +json[i].id+")");
+                     btnBorrar.setAttribute("onclick","borraEquipoPorId('"
+                             +json[i].id+"')");
                      btnBorrar.textContent="Borrar";
                      celdaBorrar.appendChild(btnBorrar);
                     /*** CELDA ACTUALIZAR ****/
                      let celdaActualizar=document.createElement("td");
                      let btnActualizar=document.createElement("button");
-                     btnActualizar.setAttribute("onclick","cargaEquipoPorId("
-                             +json[i].id+")");
+                     btnActualizar.setAttribute("onclick","cargaEquipoPorId('"
+                             +json[i].id+"')");
                      btnActualizar.textContent="Actualizar";
                      celdaActualizar.appendChild(btnActualizar);
                     
@@ -125,6 +130,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                      fila.appendChild(celdaNombre);
                      fila.appendChild(celdaCiudad);
                      fila.appendChild(celdaGoles);
+                     fila.appendChild(celdaImagen);
                      fila.appendChild(celdaBorrar);
                      fila.appendChild(celdaActualizar);
                      
@@ -145,7 +151,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 
              btnInsertaEquipo.style.display="none";
              btnActualizaEquipo.style.display="inline";
-             fetch(getAbsolutePath()+'/webresources/generic/equipo/'+idEquipo )
+             fetch(`http://localhost:3000/webresources/generic/equipos/${idEquipo}`)
                 .then(response => response.json())
                 .then(json => {
                     console.log(json);
@@ -154,6 +160,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                     document.getElementById("nombre").value=json.nombre;
                     document.getElementById("ciudad").value=json.ciudad;
                     document.getElementById("goles").value=json.goles;
+                    document.getElementById("imagen").src = "imagenes/" + json.imagen;
                 });
          }
          
@@ -164,30 +171,52 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
              btnActualizaEquipo.style.display="none";
          }
          function actualizaEquipo(){
-              fetch(getAbsolutePath()+'/webresources/generic/equipo/', {
-             method: 'PUT',
-             body: JSON.stringify({
-               id: document.getElementById("id").value,
-               nombre: document.getElementById("nombre").value,
-               ciudad: document.getElementById("ciudad").value,
-               goles: document.getElementById("goles").value
-             }),
-             headers: {
-               'Content-type': 'application/json; charset=UTF-8',
-             },
-           })
-             .then((response) => response.json())
-             .then((json) => console.log(json));
-
+            subeArchivo().then(nombreImagen => {
+              fetch(`http://localhost:3000/webresources/generic/equipos/${document.getElementById("id").value}`, {
+              method: 'PUT',
+              body: JSON.stringify({
+                id: document.getElementById("id").value,
+                nombre: document.getElementById("nombre").value,
+                ciudad: document.getElementById("ciudad").value,
+                goles: document.getElementById("goles").value,
+                imagen: nombreImagen
+              }),
+              headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+              },
+            })
+              .then((response) => response.json())
+              .then((json) => console.log(json));
+            });
          }
+
+         function subeArchivo() {
+            let imagen = document.querySelector("#imagen-file");
+
+            let formData = new FormData();
+            formData.append("imagen", imagen.files[0]);
+
+            return fetch('http://localhost:3000/subir', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((json) => {
+                    console.log(json.msg);
+                    return json.nombreTemporal;
+                })
+                .catch(error => console.error(error));
+        }
          
          function insertaEquipo(){
-              fetch(getAbsolutePath()+'/webresources/generic/equipo/', {
+            subeArchivo().then(nombreImagen => {
+              fetch(`http://localhost:3000/webresources/generic/equipos`, {
              method: 'POST',
              body: JSON.stringify({
                nombre: document.getElementById("nombre").value,
                ciudad: document.getElementById("ciudad").value,
-               goles: document.getElementById("goles").value
+               goles: document.getElementById("goles").value,
+               imagen: nombreImagen
              }),
              headers: {
                'Content-type': 'application/json; charset=UTF-8',
@@ -195,7 +224,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
            })
              .then((response) => response.json())
              .then((json) => console.log(json));
-
+          });
          }
          
          function borrarEquipo() {
@@ -204,8 +233,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
              cargaEquipos();
          }
          function borraEquipoPorId(idEquipo){
-             fetch(getAbsolutePath()+'/webresources/generic/equipo/'+idEquipo, {
+             fetch(`http://localhost:3000/webresources/generic/equipos/`+idEquipo, {
                 method: 'DELETE',
+                headers: {
+                    'x-token': localStorage.getItem("token"),
+                },
               });
               cargaEquipos();
          }
