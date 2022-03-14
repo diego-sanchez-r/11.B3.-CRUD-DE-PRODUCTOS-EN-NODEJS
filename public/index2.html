@@ -87,8 +87,9 @@
             console.log("Token Inicio: " + json.token);
             localStorage.setItem("token", json.token);
 
-            console.log(getAbsolutePath());
+           
            function cargaEquipos(){
+            console.log(getAbsolutePath());
               let tabla = document.getElementById("tablaEquipos");
               fetch(`http://localhost:3000/webresources/generic/equipos`)
                 .then(response => response.json())
