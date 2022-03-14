@@ -7,6 +7,33 @@
     <title>Document</title>
 </head>
 <body>
+  <script>    
+    let btnLogin = document.getElementById('btnLogin');
+    btnLogin.addEventListener('click',hacerLogin);
+    function hacerLogin(){
+        const ruta = getAbsolutePath() +'login'
+        fetch(ruta, {
+            method: 'POST',
+            body: JSON.stringify({
+                correo: document.getElementById('correo').value,
+                password: document.getElementById('password').value
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            })
+            .then((response) => response.json())
+            
+            .then((json) => {alert(json.msg + "Token: " + json.token); window.location = "index2.html";})
+                    }
+
+       function getAbsolutePath() {
+            var loc = window.location;
+            var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+            return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+        }
+
+</script>
         <h1>Login con Google</h1>
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <div
@@ -26,6 +53,14 @@
         ></div>
     
         <button id="deslogearse-google">Deslogearse de Google</button>
+
+        <div id="login">
+          <label for="correo">Correo: </label>
+          <input type="email" id="correo">
+          <label for="password">Password: </label>
+          <input type="password" id="password">
+          <button id="btnLogin">Login</button>
+      </div>
         <script>
           const boton = document.getElementById('deslogearse-google');
           boton.onclick = () =>{
