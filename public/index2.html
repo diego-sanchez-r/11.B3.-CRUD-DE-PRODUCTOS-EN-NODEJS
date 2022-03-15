@@ -5,25 +5,30 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
     </head>
     <body>
     <center>
         <h2>Todos los Equipos de Futbol</h2>
-        <button id="btnEquipos">Cargar Equipos</button>
+        <button id="btnEquipos" class="btn btn-success">Cargar Equipos</button>
         <button id="btnEquipo" style="display: none ">Carga Equipo</button>
+
 
         
         <button id="btnBorraEquipo" style="display: none ">Borra Producto</button>
         <button type="button" class="btn btn-primary" id="abreParaInsertar">
             Nuevo Equipo
         </button>
+        <a href="index.html"><button type="button" class="btn btn-danger">
+          Cerrar Sesión
+        </button></a>
         <input type="number" style="display: none " id="idEquipo" value="1">
         <div id="formulario">
 
             
         </div>
-        <table id="tablaEquipos" class="table">
+        <br><br>
+        <table id="tablaEquipos" class="table table-striped">
             
         </table>
         <div id="divEquipos" style="display: none "></div>
@@ -80,7 +85,7 @@
 
            function getAbsolutePath() {
                 var loc = window.location;
-                var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+                var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/')+1);
                 return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
             }
            
@@ -91,7 +96,7 @@
            function cargaEquipos(){
             console.log(getAbsolutePath());
               let tabla = document.getElementById("tablaEquipos");
-              fetch(`http://localhost:3000/webresources/generic/equipos`)
+              fetch(`${getAbsolutePath()}webresources/generic/equipos`)
                 .then(response => response.json())
                 .then(json => {console.log(json);
                 //bucle para eliminar todas las filas de la tabla
@@ -111,7 +116,7 @@
                      let celdaGoles=document.createElement("td");
                      celdaGoles.textContent=json[i].goles;
                      let celdaImagen=document.createElement("td");
-                     celdaImagen.innerHTML = "<img src='imagenes/" + json[i].imagen + "' height='100' width='100'>";
+                     celdaImagen.innerHTML = "<img src='./imagenes/" + json[i].imagen + "' height='100' width='100'>";
                      /*** CELDA BORRAR ****/
                      let celdaBorrar=document.createElement("td");
                      let btnBorrar=document.createElement("button");
@@ -152,7 +157,7 @@
 
              btnInsertaEquipo.style.display="none";
              btnActualizaEquipo.style.display="inline";
-             fetch(`http://localhost:3000/webresources/generic/equipos/${idEquipo}`)
+             fetch(`${getAbsolutePath()}webresources/generic/equipos/${idEquipo}`)
                 .then(response => response.json())
                 .then(json => {
                     console.log(json);
@@ -173,7 +178,7 @@
          }
          function actualizaEquipo(){
             subeArchivo().then(nombreImagen => {
-              fetch(`http://localhost:3000/webresources/generic/equipos/${document.getElementById("id").value}`, {
+              fetch(`${getAbsolutePath()}webresources/generic/equipos/${document.getElementById("id").value}`, {
               method: 'PUT',
               body: JSON.stringify({
                 id: document.getElementById("id").value,
@@ -183,6 +188,7 @@
                 imagen: nombreImagen
               }),
               headers: {
+                'x-token': localStorage.getItem("token"),
                 'Content-type': 'application/json; charset=UTF-8',
               },
             })
@@ -197,7 +203,7 @@
             let formData = new FormData();
             formData.append("imagen", imagen.files[0]);
 
-            return fetch('http://localhost:3000/subir', {
+            return fetch(`${getAbsolutePath()}subir`, {
                 method: 'POST',
                 body: formData,
             })
@@ -211,7 +217,7 @@
          
          function insertaEquipo(){
             subeArchivo().then(nombreImagen => {
-              fetch(`http://localhost:3000/webresources/generic/equipos`, {
+              fetch(`${getAbsolutePath()}webresources/generic/equipos`, {
              method: 'POST',
              body: JSON.stringify({
                nombre: document.getElementById("nombre").value,
@@ -234,7 +240,7 @@
              cargaEquipos();
          }
          function borraEquipoPorId(idEquipo){
-             fetch(`http://localhost:3000/webresources/generic/equipos/`+idEquipo, {
+             fetch(`${getAbsolutePath()}webresources/generic/equipos/`+idEquipo, {
                 method: 'DELETE',
                 headers: {
                     'x-token': localStorage.getItem("token"),

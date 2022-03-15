@@ -4,38 +4,56 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" href="./css/cssLogin.css">
     <title>Document</title>
 </head>
 <body>
-  
-        <h1>Login con Google</h1>
-        <script src="https://accounts.google.com/gsi/client" async defer></script>
-        <div
-          id="g_id_onload"
-          data-client_id="351491771173-eajri48jfm1dpvmpogoivt21ar2abvh5.apps.googleusercontent.com"
-          data-auto_prompt="false"
-          data-callback="handleCredentialResponse"
-        ></div>
-        <div
-          class="g_id_signin"
-          data-type="standard"
-          data-size="large"
-          data-theme="outline"
-          data-text="sign_in_with"
-          data-shape="rectangular"
-          data-logo_alignment="left"
-        ></div>
-    
-        <button id="deslogearse-google">Deslogearse de Google</button>
-
+  <div class="login-box">
+        <img src="./imagenes/foto.png" width="280px" height="200px"/>
+        <h1>Entra</h1>
         <div id="login">
-          <label for="correo">Correo: </label>
-          <input type="email" id="correo">
-          <label for="password">Password: </label>
-          <input type="password" id="password">
-          <button id="btnLogin">Login</button>
+          <div class="text-box">
+            <i class="fas fa-user"></i>
+            <input type="email" id="correo" name="correo" placeholder="Email del Usuario..." />
+          </div>
+          <div class="text-box">
+            <i class="fas fa-unlock"></i>
+            <input type="password" id="password" name="_password" placeholder="Contraseña..."/>
+        </div>
+          <button class="btn" id="btnLogin">Login</button>
       </div>
+
+      <script src="https://accounts.google.com/gsi/client" async defer></script>
+      <div
+        id="g_id_onload"
+        data-client_id="351491771173-eajri48jfm1dpvmpogoivt21ar2abvh5.apps.googleusercontent.com"
+        data-auto_prompt="false"
+        data-callback="handleCredentialResponse"
+      ></div>
+      <div
+        class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="sign_in_with"
+        data-shape="rectangular"
+        data-logo_alignment="left"
+      ></div>
+  
+      <!--<button id="deslogearse-google">Deslogearse de Google</button>-->
+
+    </div>
         <script>
+           function getAbsolutePath() {
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+                return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+            }
+
           const boton = document.getElementById('deslogearse-google');
           boton.onclick = () =>{
             google.accounts.id.disableAutoSelect();
