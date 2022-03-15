@@ -213,7 +213,7 @@ class Server {
         )
       })
       /*Post equipos */
-    this.app.post('/webresources/generic/equipos',function (req, res) {
+    this.app.post('/webresources/generic/equipos',validarJWT,function (req, res) {
         const body = req.body;
         let miEquipo = new Equipo(body);
         miEquipo.save();
@@ -224,7 +224,7 @@ class Server {
         })
       })
       //put-EQUIPOS
-      this.app.put('/webresources/generic/equipos/:id',async function (req, res) {
+      this.app.put('/webresources/generic/equipos/:id',validarJWT,async function (req, res) {
         const body = req.body;
         const id = req.params.id;
         await Equipo.findByIdAndUpdate(id,body);
@@ -235,7 +235,7 @@ class Server {
         })
       })
       //delete EQUIPOS
-      this.app.delete('/webresources/generic/equipos/:id', async function (req, res) {
+      this.app.delete('/webresources/generic/equipos/:id',validarJWT, async function (req, res) {
         const id = req.params.id;
         await Equipo.findByIdAndDelete(id);
         res.status(200).json({

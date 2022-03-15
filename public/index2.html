@@ -226,6 +226,7 @@
                imagen: nombreImagen
              }),
              headers: {
+                'x-token': localStorage.getItem("token"),
                'Content-type': 'application/json; charset=UTF-8',
              },
            })

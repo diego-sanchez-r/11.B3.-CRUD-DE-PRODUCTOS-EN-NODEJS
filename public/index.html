@@ -76,6 +76,7 @@
             })
               .then((response) => response.json())
               .then((json) =>{ console.log(json);window.location = "index2.html";
+                localStorage.setItem("token", json.token);
                 localStorage.setItem("email",json.miusuario.correo);
               });
           }
@@ -97,7 +98,7 @@
                   })
                   .then((response) => response.json())
                   
-                  .then((json) => {alert(json.msg + "Token: " + json.token); window.location = "index2.html";})
+                  .then((json) => {alert(json.msg + "Token: " + json.token); localStorage.setItem("token", json.token); window.location = "index2.html";})
                           }
       
              function getAbsolutePath() {
